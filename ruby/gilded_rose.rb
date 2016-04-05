@@ -6,9 +6,9 @@ class GildedRose
 
   def update_quality()
     @items.each do |item|
-      neither_brie_or_backstage_pass(item) ? decrease_quality(item) : quality_less_fifty(item)
+      neither_brie_or_backstage_pass(item) ? decrease_quality(item) : increase_quality_if_less_than_fifty(item)
       decrease_sell_in(item)
-      is_not_aged_brie(item) 
+      if_negative_sell_in(item) 
     end
   end
 
@@ -18,7 +18,7 @@ class GildedRose
     not_aged_brie?(item) && not_backstage_pass?(item)
   end
 
-  def quality_less_fifty(item)
+  def increase_quality_if_less_than_fifty(item)
     if item.quality < 50
       increase_quality(item)
       is_backstage_pass(item) unless not_backstage_pass?(item)
@@ -29,7 +29,7 @@ class GildedRose
     not_backstage_pass?(item) ? decrease_quality(item) : item.quality = 0;   
   end
 
-  def is_not_aged_brie(item)
+  def if_negative_sell_in(item)
     if item.sell_in < 0
       not_aged_brie?(item) ? is_not_backstage_pass(item) : increase_quality(item)
     end
