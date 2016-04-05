@@ -19,7 +19,7 @@ class GildedRose
   end
 
   def increase_quality_if_less_than_fifty(item)
-    if item.quality < 50
+    if quality_less_than_fifty?(item)
       increase_quality(item)
       is_backstage_pass(item) unless not_backstage_pass?(item)
     end
@@ -45,11 +45,15 @@ class GildedRose
   end
 
   def increase_quality(item)
-    item.quality += 1 if item.quality < 50
+    item.quality += 1 if quality_less_than_fifty?(item)
   end
 
   def decrease_sell_in(item)
     item.sell_in -= 1 if not_sulfuras(item)
+  end
+
+  def quality_less_than_fifty?(item)
+    item.quality < 50
   end
 
   def not_aged_brie?(item)
