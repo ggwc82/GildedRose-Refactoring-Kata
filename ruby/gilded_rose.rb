@@ -10,21 +10,14 @@ class GildedRose
         decrease_quality(item)
       else
         if item.quality < 50
-          item.quality = item.quality + 1
-          unless not_backstage_pass?(item)
-            increase_quality(item) if item.sell_in < 11
-            increase_quality(item) if item.sell_in < 6
-          end
+          increase_quality(item)
+          is_backstage_pass(item) unless not_backstage_pass?(item)
         end
       end
       decrease_sell_in(item)
       if item.sell_in < 0
         if not_aged_brie?(item)
-          if not_backstage_pass?(item)
-            decrease_quality(item) 
-          else
-            item.quality = 0;
-          end
+          is_not_backstage_pass(item)
         else
           increase_quality(item)
         end
@@ -34,23 +27,25 @@ class GildedRose
 
   private
 
+  def is_not_backstage_pass(item)
+    not_backstage_pass?(item) ? decrease_quality(item) : item.quality = 0;   
+  end
+
+  def is_backstage_pass(item)
+    increase_quality(item) if item.sell_in < 11
+    increase_quality(item) if item.sell_in < 6
+  end
 
   def decrease_quality(item)
-    if not_sulfuras(item) && positive_quality(item)
-      item.quality = item.quality - 1
-    end
+    item.quality -= 1 if not_sulfuras(item) && positive_quality(item)
   end
 
   def increase_quality(item)
-    if item.quality < 50
-      item.quality = item.quality + 1
-    end
+    item.quality += 1 if item.quality < 50
   end
 
   def decrease_sell_in(item)
-    if item.name != "Sulfuras, Hand of Ragnaros"
-      item.sell_in = item.sell_in - 1
-    end
+    item.sell_in -= 1 if not_sulfuras(item)
   end
 
   def not_aged_brie?(item)
